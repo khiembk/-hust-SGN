@@ -38,7 +38,7 @@ class CustomVocab(object):
 
     def load_pretrained_embedding(self, name):
         if name == 'GloVe':
-            with open("data/Embeddings/GloVe/GloVe_300.json", 'r') as fin:
+            with open("/content/-hust-SGN/data/Embeddings/GloVe/GloVe_300.json", 'r') as fin:
                 w2v = json.load(fin)
         elif name == 'Word2Vec':
             w2v = gensim.models.KeyedVectors.load_word2vec_format(
@@ -126,7 +126,7 @@ class CustomDataset(Dataset):
         models = [ self.C.vis_encoder.app_feat, self.C.vis_encoder.mot_feat  ]
         for model in models:
             fpath = self.C.loader.split_video_feat_fpath_tpl.format(self.C.corpus, model, self.split)
-
+            fpath = "/content/-hust-SGN/" + fpath
             fin = h5py.File(fpath, 'r')
             for vid in fin.keys():
                 feats = fin[vid][:]
