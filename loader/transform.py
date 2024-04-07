@@ -94,6 +94,8 @@ class RemovePunctuation:
         self.regex = re.compile('[%s]' % re.escape(string.punctuation))
 
     def __call__(self, sentence):
+        if isinstance(sentence, bytes):
+            sentence = sentence.decode()
         return self.regex.sub('', sentence)
 
 
