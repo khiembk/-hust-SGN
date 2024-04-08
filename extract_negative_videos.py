@@ -65,7 +65,7 @@ def extract_negative_samples(corpus, vid2captions):
     for captions in vid2captions.values():
         total_words += captions2words(captions)
     total_words_counter = Counter(total_words)
-    with open("data/{}/metadata/words_stats.csv".format(corpus), 'w') as fout:
+    with open("/content/-hust-SGN/data/{}/metadata/words_stats.csv".format(corpus), 'w') as fout:
         for word, cnt in total_words_counter.items():
             fout.write("{}, {}\n".format(word, cnt))
 
@@ -73,13 +73,13 @@ def extract_negative_samples(corpus, vid2captions):
     total_words = set(total_words)
     total_stopwords = nltk.corpus.stopwords.words('english')
     stopwords = [ word for word in total_words if word in total_stopwords ]
-    with open("data/{}/metadata/stopwords_stats.csv".format(corpus), 'w') as fout:
+    with open("/content/-hust-SGN/data/{}/metadata/stopwords_stats.csv".format(corpus), 'w') as fout:
         batch_size = 10
         for i in range(0, len(stopwords), batch_size):
             fout.write(','.join(stopwords[i:i + batch_size]) + '\n')
 
     vid2words = { vid: captions2words(captions, stopwords) for vid, captions in vid2captions.items() }
-    with open("data/{}/metadata/vid2vocabs.json".format(corpus), 'w') as fout:
+    with open("/content/-hust-SGN/data/{}/metadata/vid2vocabs.json".format(corpus), 'w') as fout:
         json.dump({ vid: list(vocabs) for vid, vocabs in vid2words.items() }, fout)
 
     vid2neg_vids = defaultdict(lambda: [])
@@ -108,7 +108,7 @@ def extract_negative_samples(corpus, vid2captions):
             vid2neg_captions[pos_vid]['negative_videos'][neg_vid] = []
             for neg_caption in neg_captions:
                 vid2neg_captions[pos_vid]['negative_videos'][neg_vid].append(' '.join(neg_caption))
-    with open("data/{}/metadata/vid2neg_captions.json".format(corpus), 'w') as fout:
+    with open("/content/-hust-SGN/data/{}/metadata/vid2neg_captions.json".format(corpus), 'w') as fout:
         json.dump(vid2neg_captions, fout)
 
 
@@ -119,7 +119,7 @@ def extract_negative_samples(corpus, vid2captions):
         100. * len(vid2neg_vids) / len(vid2captions) ))
     print("Average number of negative videos: {:.1f} videos".format(
         float(sum(num_neg_vids)) / len(num_neg_vids) ))
-    with open("data/{}/metadata/neg_vids_stats.csv".format(corpus), 'w') as fout:
+    with open("/content/-hust-SGN/data/{}/metadata/neg_vids_stats.csv".format(corpus), 'w') as fout:
         for num, cnt in counter.items():
             fout.write("{}, {}\n".format(num, cnt))
     return vid2neg_vids
@@ -127,17 +127,17 @@ def extract_negative_samples(corpus, vid2captions):
 
 def main(dataset, split):
     if dataset == 'MSVD':
-        caption_fpath = "./data/{}/metadata/{}.csv".format(dataset, split)
+        caption_fpath = "/content/-hust-SGN/data/{}/metadata/{}.csv".format(dataset, split)
         vid2captions = load_MSVD_captions(caption_fpath)
     elif dataset == 'MSR-VTT':
-        caption_fpath = "./data/{}/metadata/{}.json".format(dataset, split)
+        caption_fpath = "/content/-hust-SGN/data/{}/metadata/{}.json".format(dataset, split)
         vid2captions = load_MSRVTT_captions(caption_fpath)
     else:
         raise NotImplementedError('Unknown dataset: {}'.format(dataset))
 
     negative_videos = extract_negative_samples(dataset, vid2captions)
 
-    with open("data/{}/metadata/neg_vids_{}.json".format(dataset, split), 'w') as fout:
+    with open("/content/-hust-SGN/data/{}/metadata/neg_vids_{}.json".format(dataset, split), 'w') as fout:
         json.dump(negative_videos, fout)
 
 if __name__ == '__main__':

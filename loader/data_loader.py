@@ -141,8 +141,8 @@ class CustomDataset(Dataset):
 
     def load_negative_vids(self):
         neg_vids_fpath = self.C.loader.split_negative_vids_fpath.format(self.split)
-        if os.path.exists(neg_vids_fpath):
-            with open(neg_vids_fpath, 'r') as fin:
+        if os.path.exists("/content/-hust-SGN/"+neg_vids_fpath):
+            with open("/content/-hust-SGN/"+neg_vids_fpath, 'r') as fin:
                 self.vid2neg_vids = json.load(fin)
         else:
             print("[WARNING] The file {} not found. Apply random negative sampling in {}".format(neg_vids_fpath, self.split))
