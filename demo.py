@@ -1,15 +1,7 @@
 from __future__ import print_function
 import argparse
-
 import torch
-
 import utils
-from utils import build_loaders, build_model, score
-from __future__ import print_function
-import argparse
-
-import torch
-
 from utils import build_loaders, build_model, score
 from config import Config as C, MSRVTTLoaderConfig, MSVDLoaderConfig
 
@@ -32,7 +24,7 @@ def run(inputVideoPath, ckpt_fpath):
 
 if __name__ == '__main__':
     args = parse_args()
-    run(args.corpus, args.ckpt_fpath)
+    run(args.input, args.ckpt_fpath)
 
 
 
