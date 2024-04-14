@@ -33,9 +33,10 @@ def run(corpus, ckpt_fpath):
     model.eval()
 
     scores, refs, hypos, _ = score(model, test_iter, vocab)
-    print(scores)
-    print("hypos: ", hypos)
-    print("refs: ", refs)
+    for index in hypos:
+        print("Index:", index)
+        print("Hypos:", hypos[index])
+        print("Refs:", refs[index])
 
 
 if __name__ == '__main__':
