@@ -4,7 +4,7 @@ import torch
 import utils
 from utils import build_loaders, build_model, score
 from config import Config as C, MSRVTTLoaderConfig, MSVDLoaderConfig
-
+import loader.load_video
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -20,7 +20,8 @@ def run(inputVideoPath, ckpt_fpath):
     model = build_model(C, vocab)
     model.load_state_dict(torch.load(ckpt_fpath))
     model.cuda()
-    utils.predict(model,test_iter,vocab)
+    test_iter1 = loader.load_video.get_collate_fn(inputVideoPath)
+    utils.predict(model,test_iter1,vocab)
 
 if __name__ == '__main__':
     args = parse_args()

@@ -106,7 +106,7 @@ def parse_batch(batch):
 
 def get_vids_feats_pos(batch):
     pos, _ = batch
-    pos_vids, pos_vis_feats, _ = pos
+    pos_vids, pos_vis_feats = pos
     for model in pos_vis_feats:
         pos_vis_feats[model] = pos_vis_feats[model].cuda()
     return pos_vids, pos_vis_feats
