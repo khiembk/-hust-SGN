@@ -104,6 +104,12 @@ def parse_batch(batch):
     neg = ( neg_vids, neg_vis_feats, neg_captions )
     return pos, neg
 
+def get_vids_feats_pos(batch):
+    pos, _ = batch
+    pos_vids, pos_vis_feats, _ = pos
+    for model in pos_vis_feats:
+        pos_vis_feats[model] = pos_vis_feats[model].cuda()
+    return pos_vids, pos_vis_feats
 
 def train(e, model, optimizer, train_iter, vocab, teacher_forcing_ratio, CA_lambda, gradient_clip):
     model.train()
@@ -201,6 +207,34 @@ def build_YOLO_iter(data_iter, batch_size):
         feats_list = list(feats)
         feats = feats_list[batch_size:]
 
+def build_YOLO_iter_for_predict(data_iter, batch_size):
+    score_dataset = {}
+    for batch in iter(data_iter):
+        vids, feats = get_vids_feats_pos(batch)
+        for i, vid in enumerate(vids):
+            feat = {}
+            for model in feats:
+                feat[model] = feats[model][i]
+            if vid not in score_dataset:
+                score_dataset[vid] = feat
+
+    vids = score_dataset.keys()
+    feats = score_dataset.values()
+    while len(vids) > 0:
+        vids_list = list(vids)
+        vids_batch = vids_list[:batch_size]
+        feats_batch = defaultdict(lambda: [])
+        feats_list = list(feats)[:batch_size]
+        for feat in feats_list:
+            for model, f in feat.items():
+                feats_batch[model].append(f)
+        for model in feats_batch:
+            feats_batch[model] = torch.stack(feats_batch[model], dim=0)
+        yield ( feats_batch )
+        vids_list = list(vids)
+        vids = vids_list[batch_size:]
+        feats_list = list(feats)
+        feats = feats_list[batch_size:]
 
 def score(model, data_iter, vocab):
     def build_refs(data_iter):
@@ -229,8 +263,8 @@ def score(model, data_iter, vocab):
 
 def predict(model, data_iter, vocab):
     model.eval()
-    YOLO_iter = build_YOLO_iter(data_iter, batch_size=1)
-    for _, feats in tqdm(YOLO_iter):
+    YOLO_iter = build_YOLO_iter_for_predict(data_iter, batch_size=1)
+    for  feats in tqdm(YOLO_iter):
         captions = model.describe(feats)
         captions = [ idxs_to_sentence(caption, vocab.idx2word, vocab.word2idx['<EOS>']) for caption in captions ]
         print(captions)
