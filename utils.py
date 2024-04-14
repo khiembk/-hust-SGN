@@ -216,15 +216,15 @@ def score(model, data_iter, vocab):
     PAD_idx = vocab.word2idx['<PAD>']
     YOLO_iter = build_YOLO_iter(data_iter, batch_size=32)
     refs, vid2idx = build_refs(data_iter)
-    print("refs: ", refs)
+
     hypos = {}
     for vids, feats in tqdm(YOLO_iter, desc='score'):
         captions = model.describe(feats)
-        print("captions: ", captions)
+
         captions = [ idxs_to_sentence(caption, vocab.idx2word, vocab.word2idx['<EOS>']) for caption in captions ]
         for vid, caption in zip(vids, captions):
             hypos[vid2idx[vid]] = [ caption ]
-            print("hypos: ", hypos)
+
     scores = calc_scores(refs, hypos)
     return scores, refs, hypos, vid2idx
 
