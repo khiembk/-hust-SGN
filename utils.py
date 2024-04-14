@@ -224,7 +224,6 @@ def score(model, data_iter, vocab):
         captions = [ idxs_to_sentence(caption, vocab.idx2word, vocab.word2idx['<EOS>']) for caption in captions ]
         for vid, caption in zip(vids, captions):
             hypos[vid2idx[vid]] = [ caption ]
-
     scores = calc_scores(refs, hypos)
     return scores, refs, hypos, vid2idx
 
