@@ -1,5 +1,4 @@
 import pandas as pd
-
 from loader.data_loader import CustomVocab, CustomDataset, Corpus
 
 

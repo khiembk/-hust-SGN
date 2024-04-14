@@ -3,6 +3,7 @@ import argparse
 
 import torch
 
+import utils
 from utils import build_loaders, build_model, score
 from __future__ import print_function
 import argparse
@@ -27,7 +28,7 @@ def run(inputVideoPath, ckpt_fpath):
     model = build_model(C, vocab)
     model.load_state_dict(torch.load(ckpt_fpath))
     model.cuda()
-    #print(model.describe())
+    utils.predict(model,test_iter,vocab)
 
 if __name__ == '__main__':
     args = parse_args()

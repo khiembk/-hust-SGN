@@ -284,6 +284,7 @@ class Corpus(object):
             sampler=RandomSampler(dataset, replacement=False),
             num_workers=self.C.loader.num_workers,
             collate_fn=self.collate_fn)
+
         data_loader.captions = { k: [ ' '.join(self.transform_sentence(c)) for c in v   ] for k, v in dataset.captions.items()   }
         return data_loader
 

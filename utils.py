@@ -227,6 +227,14 @@ def score(model, data_iter, vocab):
     scores = calc_scores(refs, hypos)
     return scores, refs, hypos, vid2idx
 
+def predict(model, data_iter, vocab):
+    model.eval()
+    YOLO_iter = build_YOLO_iter(data_iter, batch_size=1)
+    for _, feats in tqdm(YOLO_iter):
+        captions = model.describe(feats)
+        captions = [ idxs_to_sentence(caption, vocab.idx2word, vocab.word2idx['<EOS>']) for caption in captions ]
+        print(captions)
+
 
 # refers: https://github.com/zhegan27/SCN_for_video_captioning/blob/master/SCN_evaluation.py
 def calc_scores(ref, hypo):
