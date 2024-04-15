@@ -105,10 +105,10 @@ def parse_batch(batch):
     return pos, neg
 
 def get_vids_feats_pos(video_feats):
-    pos_vids = list(set(vid for vid in video_feats for model in video_feats[vid]))
+  #  pos_vids = list(set(vid for vid in video_feats for model in video_feats[vid]))
     for model in video_feats:
         video_feats[model] = video_feats[model].cuda()
-    return pos_vids, video_feats
+    return video_feats
 
 def train(e, model, optimizer, train_iter, vocab, teacher_forcing_ratio, CA_lambda, gradient_clip):
     model.train()
@@ -206,10 +206,10 @@ def build_YOLO_iter(data_iter, batch_size):
         feats_list = list(feats)
         feats = feats_list[batch_size:]
 
-def build_YOLO_iter_for_predict(data_iter, batch_size):
+def build_YOLO_iter_for_predict(data_iter, batch_size , vids):
     score_dataset = {}
     for batch in iter(data_iter):
-        vids, feats = get_vids_feats_pos(batch)
+        feats = get_vids_feats_pos(batch)
         for i, vid in enumerate(vids):
             feat = {}
             for model in feats:
@@ -260,10 +260,9 @@ def score(model, data_iter, vocab):
     scores = calc_scores(refs, hypos)
     return scores, refs, hypos, vid2idx
 
-def predict(model, data_iter, vocab):
-
-    YOLO_iter = build_YOLO_iter_for_predict(data_iter, batch_size=1)
-    for  feats in tqdm(YOLO_iter):
+def predict(model, data_iter, vocab, vids):
+    YOLO_iter = build_YOLO_iter_for_predict(data_iter, batch_size=1, vids= vids)
+    for feats in tqdm(YOLO_iter):
         captions = model.describe(feats)
         captions = [ idxs_to_sentence(caption, vocab.idx2word, vocab.word2idx['<EOS>']) for caption in captions ]
         print(captions)

@@ -2,7 +2,7 @@ import numpy as np
 import h5py
 from collections import defaultdict
 def load_video_feats(name_feature):
-    models = ['ResNet101','3DResNet101']
+    models = ['ResNet101','3DResNext101']
     video_feats = defaultdict(lambda: {})
     vids = defaultdict(lambda :{})
     for model in models:
