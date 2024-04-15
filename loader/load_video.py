@@ -1,49 +1,20 @@
-from torch.utils.data import DataLoader, Dataset, RandomSampler
-import json
-import os
-import random
-from collections import defaultdict
-import gensim
-import h5py
 import numpy as np
-import torch
-def load_video_feats(fpath):
+import h5py
+from collections import defaultdict
+def load_video_feats(name_feature):
+    models = ['ResNet101','3DResNet101']
     video_feats = defaultdict(lambda: {})
-    models = ['ResNet101', '3DResNext101']
+    vids = defaultdict(lambda :{})
     for model in models:
-        fpath = "/content/-hust-SGN/" + fpath
+        fpath = "/content/-hust-SGN/data/MSVD/features/" +model+ name_feature
         fin = h5py.File(fpath, 'r')
         for vid in fin.keys():
             feats = fin[vid][:]
+            feats_len = len(feats)
             # Sample fixed number of frames
-            sampled_idxs = np.linspace(0, len(feats) - 1, 30, dtype=int)
+            sampled_idxs = np.linspace(0, feats_len - 1, 30, dtype=int)
             feats = feats[sampled_idxs]
             video_feats[vid][model] = feats
         fin.close()
-    return video_feats
-
-def get_data_to_predict( fpath):
-    data_loader = DataLoader(
-            batch_size= 1,
-            shuffle=False, # If sampler is specified, shuffle must be False.
-            num_workers= 1,
-            collate_fn= get_collate_fn(fpath))
-    return data_loader
-
-def get_collate_fn(fpath):
-    pos_video_feats = load_video_feats(fpath)
-    pos_vids = list(pos_video_feats.keys())
-    pos_video_feats_list = defaultdict(lambda: [])
-
-    for vid, model_feats in pos_video_feats.items():
-        for model, feats in model_feats.items():
-            pos_video_feats_list[model].append(feats)
-
-    pos_video_feats_list = dict(pos_video_feats_list)
-
-    for model in pos_video_feats_list:
-        pos_video_feats_list[model] = torch.stack(pos_video_feats_list[model], dim=0).float()
-
-    pos = (pos_vids, pos_video_feats_list)
-    neg = (None,None)
-    return pos, neg
+    vids = list(set(vid for vid in video_feats for model in video_feats[vid]))
+    return vids, video_feats
