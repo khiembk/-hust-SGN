@@ -104,11 +104,12 @@ def parse_batch(batch):
     neg = ( neg_vids, neg_vis_feats, neg_captions )
     return pos, neg
 
-def get_vids_feats_pos(video_feats):
-  #  pos_vids = list(set(vid for vid in video_feats for model in video_feats[vid]))
-    for model in video_feats:
-        video_feats[model] = video_feats[model].cuda()
-    return video_feats
+def get_vids_feats_pos(batch):
+    pos,_ = batch
+    pos_vids, pos_vis_feats, _ = pos
+    for model in pos_vis_feats:
+        pos_vis_feats[model] = pos_vis_feats[model].cuda()
+    return pos_vids, pos_vis_feats
 
 def train(e, model, optimizer, train_iter, vocab, teacher_forcing_ratio, CA_lambda, gradient_clip):
     model.train()
@@ -210,7 +211,6 @@ def build_YOLO_iter_for_predict(data_iter, batch_size , cur_vids, cur_feats):
     score_dataset = {}
     for batch in iter(data_iter):
         vids,feats = get_vids_feats_pos(batch)
-        print("feats in Yolo_iter: ", feats)
         for i, vid in enumerate(vids):
             feat = {}
             for model in feats:
@@ -219,11 +219,21 @@ def build_YOLO_iter_for_predict(data_iter, batch_size , cur_vids, cur_feats):
                 score_dataset[vid] = feat
 
     vids = score_dataset.keys()
+    print("Type of vids in yolo: ", type(vids))
+    print("list of attributes of videoId in yolo: ", dir(vids))
+    print("help of videoId in yolo: ", help(vids))
     if (cur_vids == vids):
         print("the current video id is true")
+    if (len(cur_vids) == len(vids)):
+        print("the videoId has the same len")
     feats = score_dataset.values()
     if (cur_feats == feats):
         print("the feats is ok in Yolo")
+    if (len(cur_feats)== len(feats)):
+        print("the feats has the same len")
+    print("Type of feats in yolo: ", type(feats))
+    print("list of attributes of feats in yolo: ", dir(feats))
+    print("help of feats in yolo: ", help(feats))
     while len(vids) > 0:
         vids_list = list(vids)
         vids_batch = vids_list[:batch_size]
@@ -267,6 +277,9 @@ def score(model, data_iter, vocab):
 
 def predict(model, data_iter, vocab, cur_vids, cur_feats):
     YOLO_iter = build_YOLO_iter_for_predict(data_iter, batch_size=1, cur_vids= cur_vids, cur_feats= cur_feats)
+    print("Type of yolo_iter myself: ", type(YOLO_iter))
+    print("list of attributes of yolo_iter: ", dir(YOLO_iter))
+    print("help of yolo_iter myself: ", help(YOLO_iter))
     if (cur_feats == YOLO_iter):
         print("the current features is true, ready to describe")
     for feats in tqdm(YOLO_iter):
