@@ -210,6 +210,7 @@ def build_YOLO_iter_for_predict(data_iter, batch_size , vids):
     score_dataset = {}
     for batch in iter(data_iter):
         feats = get_vids_feats_pos(batch)
+        print("feats in Yolo_iter: ", feats)
         for i, vid in enumerate(vids):
             feat = {}
             for model in feats:

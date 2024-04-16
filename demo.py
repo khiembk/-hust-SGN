@@ -21,8 +21,6 @@ def run(inputVideoPath, ckpt_fpath):
     model.load_state_dict(torch.load(ckpt_fpath))
     model.cuda()
     vids, feats=loader.load_video.load_video_feats("_test.hdf5")
-    print("vids: ", vids)
-    print("feats: ", feats)
     utils.predict(model,feats,vocab, vids)
 
 if __name__ == '__main__':
