@@ -206,10 +206,10 @@ def build_YOLO_iter(data_iter, batch_size):
         feats_list = list(feats)
         feats = feats_list[batch_size:]
 
-def build_YOLO_iter_for_predict(data_iter, batch_size , vids):
+def build_YOLO_iter_for_predict(data_iter, batch_size , cur_vids, cur_feats):
     score_dataset = {}
     for batch in iter(data_iter):
-        feats = get_vids_feats_pos(batch)
+        vids,feats = get_vids_feats_pos(batch)
         print("feats in Yolo_iter: ", feats)
         for i, vid in enumerate(vids):
             feat = {}
@@ -219,7 +219,11 @@ def build_YOLO_iter_for_predict(data_iter, batch_size , vids):
                 score_dataset[vid] = feat
 
     vids = score_dataset.keys()
+    if (cur_vids == vids):
+        print("the current video id is true")
     feats = score_dataset.values()
+    if (cur_feats == feats):
+        print("the feats is ok in Yolo")
     while len(vids) > 0:
         vids_list = list(vids)
         vids_batch = vids_list[:batch_size]
@@ -261,8 +265,10 @@ def score(model, data_iter, vocab):
     scores = calc_scores(refs, hypos)
     return scores, refs, hypos, vid2idx
 
-def predict(model, data_iter, vocab, vids):
-    YOLO_iter = build_YOLO_iter_for_predict(data_iter, batch_size=1, vids= vids)
+def predict(model, data_iter, vocab, cur_vids, cur_feats):
+    YOLO_iter = build_YOLO_iter_for_predict(data_iter, batch_size=1, cur_vids= cur_vids, cur_feats= cur_feats)
+    if (cur_feats == YOLO_iter):
+        print("the current features is true, ready to describe")
     for feats in tqdm(YOLO_iter):
         captions = model.describe(feats)
         captions = [ idxs_to_sentence(caption, vocab.idx2word, vocab.word2idx['<EOS>']) for caption in captions ]
