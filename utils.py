@@ -240,7 +240,8 @@ def build_YOLO_iter_for_predict(data_iter, batch_size , cur_vids, cur_feats):
                 feats_batch[model].append(f)
         for model in feats_batch:
             feats_batch[model] = torch.stack(feats_batch[model], dim=0)
-        print("type of feats_batch: ", feats_batch)
+        print("type of feats_batch: ", type(feats_batch)) #type of feats_batch:  defaultdict(<function build_YOLO_iter_for_predict.<locals>.<lambda> at 0x7f918b53dd80>
+        print("feats_batch: ", feats_batch)
         yield ( feats_batch )
         vids_list = list(vids)
         vids = vids_list[batch_size:]
