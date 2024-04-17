@@ -12,7 +12,14 @@ def parse_args():
     parser.add_argument("--ckpt_fpath", type=str)
     return parser.parse_args()
 
-
+def Convert (feat ):
+    tensor_dict = {}
+    for key, value in feat.items():
+        # Convert the NumPy array to a PyTorch tensor
+        tensor = torch.tensor(value, device='cuda:0')
+        # Add the tensor to the tensor_dict
+        tensor_dict[key] = tensor
+    return tensor_dict
 def run(inputVideoPath, ckpt_fpath):
     C.loader = MSVDLoaderConfig
     checkpoint = torch.load(ckpt_fpath)
@@ -23,7 +30,9 @@ def run(inputVideoPath, ckpt_fpath):
     vids, feats=loader.load_video.load_video_feats("_test.hdf5")
     print("Type of vids myself: ",type(vids)) #Type of vids myself:  <class 'list'>
     print("Type of feats myself: ", type(feats)) #Type of feats myself:  <class 'collections.defaultdict'>
-    utils.predict(model,test_iter,vocab, vids,feats)
+    for vid in feats :
+        print(Convert(feats[vid]))
+    #utils.predict(model,test_iter,vocab, vids,feats)
 
 if __name__ == '__main__':
     args = parse_args()
