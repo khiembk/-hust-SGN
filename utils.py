@@ -280,6 +280,8 @@ def predict(model, data_iter, vocab, cur_vids, cur_feats):
     # if (cur_feats == YOLO_iter):
     #     print("the current features is true, ready to describe")
     for feats in tqdm(YOLO_iter):
+        print("type of feats: ", type(feats))
+        print("cur feats: ", feats)
         captions = model.describe(feats)
         captions = [ idxs_to_sentence(caption, vocab.idx2word, vocab.word2idx['<EOS>']) for caption in captions ]
         print(captions)
