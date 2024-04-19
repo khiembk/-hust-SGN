@@ -18,5 +18,7 @@ class VisualEncoder(nn.Module):
     def forward(self, app_feats, mot_feats):
         app_outputs = self.app_linear(app_feats)
         mot_outputs = self.mot_linear(mot_feats)
+        print("VS_app_output: ", app_outputs)
+        print("VS_mot_output: ",mot_outputs)
         return torch.cat([ app_outputs, mot_outputs ], dim=2)
 

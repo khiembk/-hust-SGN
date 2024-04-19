@@ -28,6 +28,8 @@ class SemanticGroupingNetwork(nn.Module):
     def forward_visual_encoder(self, vis_feats):
         app_feats = vis_feats[self.vis_encoder.app_feat]
         mot_feats = vis_feats[self.vis_encoder.mot_feat]
+        print("app_feats: ",app_feats)
+        print("mot_feats: ",mot_feats)
         vis_feats = self.vis_encoder(app_feats, mot_feats)
         return vis_feats
 
@@ -140,6 +142,7 @@ class SemanticGroupingNetwork(nn.Module):
         vocab_size = self.decoder.output_size
 
         vis_feats = self.forward_visual_encoder(vis_feats)
+        print("before_beam_search: ",vis_feats)
         captions = self.beam_search(batch_size, vocab_size, vis_feats)
         return captions
 

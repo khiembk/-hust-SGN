@@ -34,6 +34,7 @@ def run(inputVideoPath, ckpt_fpath):
     for vid in feats :
         print("feats: ",Convert(feats[vid]))
         print("captions: ",model.describe(Convert(feats[vid])))
+        break
     #utils.predict(model,test_iter,vocab, vids,feats)
 
 if __name__ == '__main__':
