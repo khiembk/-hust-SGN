@@ -275,10 +275,10 @@ def score(model, data_iter, vocab):
 
 def predict(model, data_iter, vocab, cur_vids, cur_feats):
     YOLO_iter = build_YOLO_iter_for_predict(data_iter, batch_size=1, cur_vids= cur_vids, cur_feats= cur_feats)
-    print("Type of yolo_iter : ", type(YOLO_iter)) #Type of yolo_iter myself:  <class 'generator'>
+    #print("Type of yolo_iter : ", type(YOLO_iter)) #Type of yolo_iter myself:  <class 'generator'>
 
-    if (cur_feats == YOLO_iter):
-        print("the current features is true, ready to describe")
+    # if (cur_feats == YOLO_iter):
+    #     print("the current features is true, ready to describe")
     for feats in tqdm(YOLO_iter):
         captions = model.describe(feats)
         captions = [ idxs_to_sentence(caption, vocab.idx2word, vocab.word2idx['<EOS>']) for caption in captions ]
