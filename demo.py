@@ -23,19 +23,21 @@ def Convert (feat ):
     return tensor_dict
 def run(inputVideoPath, ckpt_fpath):
     C.loader = MSVDLoaderConfig
-    checkpoint = torch.load(ckpt_fpath)
     train_iter, val_iter, test_iter, vocab = build_loaders(C)
     model = build_model(C, vocab)
     model.load_state_dict(torch.load(ckpt_fpath))
     model.cuda()
     vids, feats=loader.load_video.load_video_feats("_test.hdf5")
-    print("Type of vids myself: ",type(vids)) #Type of vids myself:  <class 'list'>
-    print("Type of feats myself: ", type(feats)) #Type of feats myself:  <class 'collections.defaultdict'>
-    for vid in feats :
-        print("feats: ",Convert(feats[vid]))
-        print("captions: ",model.describe(Convert(feats[vid])))
-        break
-    #utils.predict(model,test_iter,vocab, vids,feats)
+    feats_list = loader.load_video.collate_feat(feats)
+
+    loader.load_video.my_test(model,feats_list,vocab)
+    # print("Type of vids myself: ",type(vids)) #Type of vids myself:  <class 'list'>
+    # print("Type of feats myself: ", type(feats)) #Type of feats myself:  <class 'collections.defaultdict'>
+    # for vid in feats :
+    #     print("feats: ",Convert(feats[vid]))
+    #     print("captions: ",model.describe(Convert(feats[vid])))
+    #     break
+    # #utils.predict(model,test_iter,vocab, vids,feats)
 
 if __name__ == '__main__':
     args = parse_args()

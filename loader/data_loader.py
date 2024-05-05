@@ -133,6 +133,7 @@ class CustomDataset(Dataset):
                 feats_len = len(feats)
 
                 # Sample fixed number of frames
+                #get fixed number of frame of video
                 sampled_idxs = np.linspace(0, len(feats) - 1, self.C.loader.frame_sample_len, dtype=int)
                 feats = feats[sampled_idxs]
 
