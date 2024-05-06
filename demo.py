@@ -12,15 +12,7 @@ def parse_args():
     parser.add_argument("--ckpt_fpath", type=str)
     return parser.parse_args()
 
-def Convert (feat ):
-    tensor_dict = {}
-    for key, value in feat.items():
-        # Convert the NumPy array to a PyTorch tensor
-        tensor = torch.tensor(value, device='cuda:0')
-        tensor = tensor.to(torch.float32)
-        # Add the tensor to the tensor_dict
-        tensor_dict[key] = tensor
-    return tensor_dict
+
 def run(inputVideoPath, ckpt_fpath):
     C.loader = MSVDLoaderConfig
     train_iter, val_iter, test_iter, vocab = build_loaders(C)

@@ -65,9 +65,21 @@ def build_iter(vids,data_iter, batch_size= 1):
         feats_list = list(feats)
         feats = feats_list[batch_size:]
 
+def Convert (numpy_dict ):
+    tensor_dict = {}
+
+    # Iterate through the dictionary
+    for key, value in numpy_dict.items():
+        # Convert NumPy array to PyTorch tensor
+        tensor = torch.tensor(value)
+        # Move tensor to CUDA if available
+        if torch.cuda.is_available():
+            tensor = tensor.cuda()
+        # Add tensor to the new dictionary
+        tensor_dict[key] = tensor
+    return tensor_dict
 def my_test(model, data_iter):
-    YOLO_iter = build_iter(data_iter)
-    for  feats in tqdm(YOLO_iter):
-        captions = model.describe(feats)
+    for  vid in data_iter:
+        captions = model.describe(Convert(data_iter[vid]))
         print("mine captions:", captions)
 
