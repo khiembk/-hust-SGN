@@ -2,7 +2,7 @@ import numpy as np
 import h5py
 from collections import defaultdict
 import torch
-import tqdm
+from tqdm import tqdm
 # for vids, feats in tqdm(YOLO_iter, desc='score'):
 #     captions = model.describe(feats)
 def load_video_feats(name_feature):
@@ -65,10 +65,8 @@ def build_iter(vids,data_iter, batch_size= 1):
         feats_list = list(feats)
         feats = feats_list[batch_size:]
 
-def my_test(model, data_iter, vocab):
-
+def my_test(model, data_iter):
     YOLO_iter = build_iter(data_iter)
-
     for  feats in tqdm(YOLO_iter):
         captions = model.describe(feats)
         print("mine captions:", captions)

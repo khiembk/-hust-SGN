@@ -28,9 +28,8 @@ def run(inputVideoPath, ckpt_fpath):
     model.load_state_dict(torch.load(ckpt_fpath))
     model.cuda()
     vids, feats=loader.load_video.load_video_feats("_test.hdf5")
-    feats_list = loader.load_video.collate_feat(feats)
 
-    loader.load_video.my_test(model,feats_list,vocab)
+    loader.load_video.my_test(model,feats)
     # print("Type of vids myself: ",type(vids)) #Type of vids myself:  <class 'list'>
     # print("Type of feats myself: ", type(feats)) #Type of feats myself:  <class 'collections.defaultdict'>
     # for vid in feats :
